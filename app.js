@@ -12,21 +12,16 @@ var lastIndex = 0;
 
 app.post('/memos/update', function(req, res) {
 	if(	req.body.ids instanceof Array) {
-		var ret = {};
-		ret.removed = req.body.ids.filter(function (id) {
-			return memos.every(function (memo) {
-				return memo.id != id;
-			});
+		return res.json({
+			removed:req.body.ids.filter(function (id) {
+						return memos.every(function (memo) {
+							return memo.id != id;
+						});
+					}),
+			added:  memos.filter(function (memo) {
+						return req.body.ids.indexOf(memo.id+'') <= -1;
+					})
 		});
-		console.log('User had these Ids : ' + req.body.ids)
-		console.log('Server had : ' + JSON.stringify(memos))
-		ret.added = memos.filter(function (memo) {
-			return req.body.ids.indexOf(memo.id+'') <= -1;
-		})
-		console.log('User will recieve these : ' + ret.added)
-		console.log('')
-		console.log('')
-		res.json(ret);
 	} else {
 		return res.json({added : memos});
 	}
